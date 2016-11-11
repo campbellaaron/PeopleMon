@@ -30,6 +30,7 @@ import com.aaroncampbell.peoplemon.Network.RestClient;
 import com.aaroncampbell.peoplemon.PeopleMonApplication;
 import com.aaroncampbell.peoplemon.R;
 import com.aaroncampbell.peoplemon.Stages.CatchListStage;
+import com.aaroncampbell.peoplemon.Stages.NearbyListStage;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -79,12 +80,13 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
     private String userId;
     private String caughtUserId;
     private String userName;
+    private String yourName;
     private double userLat;
     private double userLng;
     private String base64ava;
-    private String userBase64;
+    private String encodedImage;
     private final Integer radiusInMeters = 500;
-    Bitmap userAvatar;
+    public Bitmap userMarker;
 
     public MapPageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -144,6 +146,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         try {
             map.setMyLocationEnabled(true);
         } catch (SecurityException e) {}
+
         map.getUiSettings().setZoomControlsEnabled(true);
         map.getUiSettings().setCompassEnabled(true);
         map.getUiSettings().setAllGesturesEnabled(true);
@@ -169,11 +172,36 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
     };
 
     private void handleNewLocation() {
+        final BitmapDescriptor zomCon = BitmapDescriptorFactory.fromResource(R.drawable.zombie);
         final LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-        MarkerOptions options = new MarkerOptions()
-                .position(latLng)
-                .title("Current Location");
-        map.addMarker(options);
+        RestClient currentMarker = new RestClient();
+        currentMarker.getApiService().viewProfile().enqueue(new Callback<Account>() {
+            @Override
+            public void onResponse(Call<Account> call, Response<Account> response) {
+                if (response.isSuccessful()) {
+                    Account account = response.body();
+                    base64ava = account.getBase64Avatar();
+                    yourName = account.getFullName();
+                    byte[] decodedString = Base64.decode(base64ava, Base64.DEFAULT);
+                    Bitmap biteMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    biteMap = Bitmap.createScaledBitmap(biteMap, 160, 160, false);
+                    userMarker = biteMap;
+
+                    MarkerOptions options = new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(userMarker))
+                            .title(yourName);
+                    map.addMarker(options);
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Account> call, Throwable t) {
+
+            }
+        });
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, BUILDING_LEVEL));
         final Circle circle = map.addCircle(new CircleOptions().center(latLng)
                 .strokeColor(Color.RED).radius(1000));
@@ -182,7 +210,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         valAnim.setRepeatCount(ValueAnimator.INFINITE);
         valAnim.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
         valAnim.setIntValues(0, 100);
-        valAnim.setDuration(1000);
+        valAnim.setDuration(10000);
         valAnim.setEvaluator(new IntEvaluator());
         valAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         valAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -190,7 +218,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float animatedFraction = valueAnimator.getAnimatedFraction();
                 // Log.e("", "" + animatedFraction);
-                circle.setRadius(animatedFraction * 100);
+                circle.setRadius(animatedFraction * 200);
             }
         });
         valAnim.start();
@@ -215,8 +243,9 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         });
     }
     private void findNearby() {
+        final BitmapDescriptor spyCon = BitmapDescriptorFactory.fromResource(R.drawable.spy);
         RestClient restClient = new RestClient();
-        restClient.getApiService().nearby(500).enqueue(new Callback<User[]>() {
+        restClient.getApiService().nearby(100).enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
@@ -227,13 +256,15 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                        LatLng userPos = new LatLng(userLat, userLng);
                        userId = user.getUserId();
 
-                       userBase64 = user.getBase64();
-                       byte[] decodedString = Base64.decode(userBase64, Base64.DEFAULT);
-                       userAvatar = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                       final BitmapDescriptor userAva = BitmapDescriptorFactory.fromAsset(String.valueOf(userAvatar));
+//                       MarkerOptions peeps = new MarkerOptions()
+//                               .position(userPos)
+//                               .snippet(userId)
+//                               .title(userName)
+//                               .icon(spyCon);
+//                       map.addMarker(peeps);
 
+                       String userBase64 = user.getAvatarBase64();
                        if (userBase64 == null || userBase64.length() < 100) {
-                           final BitmapDescriptor spyCon = BitmapDescriptorFactory.fromResource(R.drawable.spy);
                            MarkerOptions peeps = new MarkerOptions()
                                    .position(userPos)
                                    .snippet(userId)
@@ -242,13 +273,21 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                            map.addMarker(peeps);
                            Log.d("----->", userName + " " + userId);
                        } else {
-                           MarkerOptions peeps = new MarkerOptions()
-                                   .position(userPos)
-                                   .snippet(userId)
-                                   .title(userName)
-                                   .icon(userAva);
-                           map.addMarker(peeps);
-                           Log.d("----->", userName + " " + userId);
+                           try {
+                               byte[] decodedString = Base64.decode(userBase64, Base64.DEFAULT);
+                               Log.d("$$$$$$$$$$$", decodedString.toString());
+                               Bitmap decodeAvatar = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                               decodeAvatar = Bitmap.createScaledBitmap(decodeAvatar, 100, 100, false);
+
+                               MarkerOptions peeps = new MarkerOptions()
+                                       .position(userPos)
+                                       .snippet(userId)
+                                       .title(userName)
+                                       .icon(BitmapDescriptorFactory.fromBitmap(decodeAvatar));
+                               map.addMarker(peeps);
+                               Log.d("----->", userName + " " + userId);
+                           } catch (Exception e) {}
+
                        }
 
                    }
@@ -310,11 +349,15 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         });
     }
 
-//    @OnClick
-//    public void msgTapped() {
-//
-//    }
-//
+    @OnClick(R.id.nearby)
+    public void nearbyTapped() {
+        Flow flow = PeopleMonApplication.getMainFlow();
+        History newHistory = flow.getHistory().buildUpon()
+                .push(new NearbyListStage())
+                .build();
+        flow.setHistory(newHistory, Flow.Direction.FORWARD);
+    }
+
     @OnClick(R.id.caught_button)
     public void caughtTapped() {
         Flow flow = PeopleMonApplication.getMainFlow();

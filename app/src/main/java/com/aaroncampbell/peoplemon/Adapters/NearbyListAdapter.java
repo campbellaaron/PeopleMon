@@ -16,30 +16,30 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by aaroncampbell on 11/8/16.
+ * Created by aaroncampbell on 11/11/16.
  */
 
-public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.CaughtHolder> {
+public class NearbyListAdapter extends RecyclerView.Adapter<NearbyListAdapter.NearbyHolder> {
     public ArrayList<User> peeps;
     private Context context;
 
-    public CatchListAdapter(ArrayList<User> peeps, Context context) {
+    public NearbyListAdapter(ArrayList<User> peeps, Context context) {
         this.peeps = peeps;
         this.context = context;
     } //Call immediately in onCreate to start process
 
     @Override // Getting our layout inflated into this memory space to deal with layout in code, applies to every row
-    public CaughtHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NearbyListAdapter.NearbyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflatedView = LayoutInflater.from(context)
-                .inflate(R.layout.caught_list_item, parent, false);
+                .inflate(R.layout.nearby_list, parent, false);
         // Life cycle of cells - created, then binded
-        return new CaughtHolder(inflatedView);
+        return new NearbyListAdapter.NearbyHolder(inflatedView);
     }
 
     @Override // Where we actually start the work of getting position of each row
-    public void onBindViewHolder(CaughtHolder holder, int position) {
-            User user = peeps.get(position);
-            holder.bindPeepsCaught(user);
+    public void onBindViewHolder(NearbyListAdapter.NearbyHolder holder, int position) {
+        User user = peeps.get(position);
+        holder.bindNearby(user);
     }
 
     @Override // First thing called by Recycler View
@@ -47,23 +47,21 @@ public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.Caug
         return peeps.size();
     }
 
-    class CaughtHolder extends RecyclerView.ViewHolder{
-        @Bind(R.id.id_textview)
-        TextView idTextView;
-        @Bind(R.id.name_textview)
+    class NearbyHolder extends RecyclerView.ViewHolder{
+        @Bind(R.id.peep_id)
+        TextView peepId;
+        @Bind(R.id.peep_name)
         TextView nameView;
 
-
-        public CaughtHolder(View itemView) {
+        public NearbyHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         // Puts data into UI
-        public void bindPeepsCaught(User user) {
-            idTextView.setText(user.getUserId());
+        public void bindNearby(User user) {
+            peepId.setText(user.getUserId());
             nameView.setText(user.getUserName());
-
         }
     }
 }

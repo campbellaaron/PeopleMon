@@ -16,7 +16,7 @@ public class User {
     @SerializedName("UserName")
     private String userName;
     @SerializedName("AvatarBase64")
-    private String base64;
+    private String AvatarBase64;
     @SerializedName("Longitude")
     private double longitude;
     @SerializedName("Latitude")
@@ -34,10 +34,10 @@ public class User {
         this.latitude = latitude;
     }
 
-    public User(String userId, String userName, String base64, double longitude, double latitude, Date createDate) {
+    public User(String userId, String userName, String AvatarBase64, double longitude, double latitude, Date createDate) {
         this.userId = userId;
         this.userName = userName;
-        this.base64 = base64;
+        this.AvatarBase64 = AvatarBase64;
         this.longitude = longitude;
         this.latitude = latitude;
         this.createDate = createDate;
@@ -71,12 +71,12 @@ public class User {
         this.userName = userName;
     }
 
-    public String getBase64() {
-        return base64;
+    public String getAvatarBase64() {
+        return AvatarBase64;
     }
 
-    public void setBase64(String base64) {
-        this.base64 = base64;
+    public void setAvatarBase64(String avatarBase64) {
+        this.AvatarBase64 = avatarBase64;
     }
 
     public double getLongitude() {

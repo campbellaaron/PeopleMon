@@ -75,7 +75,7 @@ public class RegisterView extends LinearLayout {
         String password = passwordField.getText().toString();
         String confirm = confirmField.getText().toString();
         String apiKey = Constants.API_KEY;
-        String baseAvatar = "string";
+        String baseAvatar = Constants.DEFAULT_AVATAR;
 
         if (username.isEmpty() || email.isEmpty() ||
                 password.isEmpty() || confirm.isEmpty()) {

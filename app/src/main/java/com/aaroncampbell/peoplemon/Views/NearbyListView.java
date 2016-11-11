@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
-import com.aaroncampbell.peoplemon.Adapters.CatchListAdapter;
+import com.aaroncampbell.peoplemon.Adapters.NearbyListAdapter;
 import com.aaroncampbell.peoplemon.Models.User;
 import com.aaroncampbell.peoplemon.Network.RestClient;
 import com.aaroncampbell.peoplemon.R;
@@ -21,23 +21,23 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by aaroncampbell on 11/7/16.
+ * Created by aaroncampbell on 11/11/16.
  */
 
-public class CatchListView extends RelativeLayout {
+public class NearbyListView extends RelativeLayout {
     private Context context;
     public ArrayList<User> caughtPeeps;
     private RestClient restClient;
-    private CatchListAdapter catchListAdapter;
+    private NearbyListAdapter nearbyListAdapter;
     private Integer usrId;
     private String peepName;
     private String base64mage;
 
-    @Bind(R.id.recycler_view)
+    @Bind(R.id.nearby_recycler)
     RecyclerView recyclerView;
 
 
-    public CatchListView(Context context, AttributeSet attrs) {
+    public NearbyListView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
     }
@@ -47,33 +47,26 @@ public class CatchListView extends RelativeLayout {
         super.onFinishInflate();
         ButterKnife.bind(this);
 
-        catchListAdapter = new CatchListAdapter(new ArrayList<User>(), context);
+        nearbyListAdapter = new NearbyListAdapter(new ArrayList<User>(), context);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(catchListAdapter);
+        recyclerView.setAdapter(nearbyListAdapter);
         getUserInfo();
     }
 
     public void getUserInfo() {
 //        final User user = new User();
         restClient = new RestClient();
-        restClient.getApiService().caughtPeeps().enqueue(new Callback<User[]>() {
+        restClient.getApiService().nearby(500).enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
 
-                    catchListAdapter.peeps = new ArrayList<>(Arrays.asList(response.body()));
+                    nearbyListAdapter.peeps = new ArrayList<>(Arrays.asList(response.body()));
 
-                    for (User user : catchListAdapter.peeps) {
-                        catchListAdapter.notifyDataSetChanged();
+                    for (User user : nearbyListAdapter.peeps) {
+                        nearbyListAdapter.notifyDataSetChanged();
                     }
-//                    base64mage = user.getAvatarBase64();
-//                    byte[] decodedString = Base64.decode(base64mage, Base64.DEFAULT);
-//                    Bitmap biteMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-//
-//                    usrAvatar.setImageBitmap(biteMap);
-//                    userId.setText(user.getUserId());
-//                    usrName.setText(user.getUserName());
                 }
             }
 
