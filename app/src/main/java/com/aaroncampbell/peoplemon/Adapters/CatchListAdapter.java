@@ -32,7 +32,7 @@ public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.Caug
     @Override // Getting our layout inflated into this memory space to deal with layout in code, applies to every row
     public CaughtHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflatedView = LayoutInflater.from(context)
-                .inflate(R.layout.caught_user_item, parent, false);
+                .inflate(R.layout.caught_list_item, parent, false);
         // Life cycle of cells - created, then binded
         return new CaughtHolder(inflatedView);
     }

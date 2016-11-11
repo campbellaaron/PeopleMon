@@ -1,14 +1,10 @@
 package com.aaroncampbell.peoplemon.Views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Base64;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.aaroncampbell.peoplemon.Adapters.CatchListAdapter;
 import com.aaroncampbell.peoplemon.Models.User;
@@ -37,12 +33,6 @@ public class CatchListView extends RelativeLayout {
     private String peepName;
     private String base64mage;
 
-    @Bind(R.id.imageView)
-    ImageView usrAvatar;
-    @Bind(R.id.id_textview)
-    TextView userId;
-    @Bind(R.id.name_textview)
-    TextView usrName;
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -57,25 +47,33 @@ public class CatchListView extends RelativeLayout {
         super.onFinishInflate();
         ButterKnife.bind(this);
 
+        catchListAdapter = new CatchListAdapter(new ArrayList<User>(), context);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(catchListAdapter);
         getUserInfo();
     }
 
     public void getUserInfo() {
-        final User user = new User();
+//        final User user = new User();
         restClient = new RestClient();
         restClient.getApiService().caughtPeeps().enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
-                    catchListAdapter.peeps = new ArrayList<>(Arrays.asList(response.body()));
-                    catchListAdapter.notifyDataSetChanged();
-                    base64mage = user.getBase64();
-                    byte[] decodedString = Base64.decode(base64mage, Base64.DEFAULT);
-                    Bitmap biteMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-                    usrAvatar.setImageBitmap(biteMap);
-                    userId.setText(user.getUserId());
-                    usrName.setText(user.getUserName());
+                    catchListAdapter.peeps = new ArrayList<>(Arrays.asList(response.body()));
+
+                    for (User user : catchListAdapter.peeps) {
+                        catchListAdapter.notifyDataSetChanged();
+                    }
+//                    base64mage = user.getBase64();
+//                    byte[] decodedString = Base64.decode(base64mage, Base64.DEFAULT);
+//                    Bitmap biteMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+//
+//                    usrAvatar.setImageBitmap(biteMap);
+//                    userId.setText(user.getUserId());
+//                    usrName.setText(user.getUserName());
                 }
             }
 
