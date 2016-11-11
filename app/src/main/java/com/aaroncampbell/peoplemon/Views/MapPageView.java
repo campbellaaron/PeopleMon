@@ -6,6 +6,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
+import android.util.Base64;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
@@ -79,7 +82,9 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
     private double userLat;
     private double userLng;
     private String base64ava;
-    private final Integer radiusInMeters = 100;
+    private String userBase64;
+    private final Integer radiusInMeters = 500;
+    Bitmap userAvatar;
 
     public MapPageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -165,7 +170,6 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
 
     private void handleNewLocation() {
         final LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .title("Current Location");
@@ -211,9 +215,8 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         });
     }
     private void findNearby() {
-        final BitmapDescriptor spyCon = BitmapDescriptorFactory.fromResource(R.drawable.spy);
         RestClient restClient = new RestClient();
-        restClient.getApiService().nearby(100).enqueue(new Callback<User[]>() {
+        restClient.getApiService().nearby(500).enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
@@ -223,13 +226,31 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                        userName = user.getUserName();
                        LatLng userPos = new LatLng(userLat, userLng);
                        userId = user.getUserId();
-                       MarkerOptions peeps = new MarkerOptions()
-                               .position(userPos)
-                               .snippet(userId)
-                               .title(userName)
-                               .icon(spyCon);
-                       map.addMarker(peeps);
-                       Log.d("----->", userName + " " + userId);
+
+                       userBase64 = user.getBase64();
+                       byte[] decodedString = Base64.decode(userBase64, Base64.DEFAULT);
+                       userAvatar = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                       final BitmapDescriptor userAva = BitmapDescriptorFactory.fromAsset(String.valueOf(userAvatar));
+
+                       if (userBase64 == null || userBase64.length() < 100) {
+                           final BitmapDescriptor spyCon = BitmapDescriptorFactory.fromResource(R.drawable.spy);
+                           MarkerOptions peeps = new MarkerOptions()
+                                   .position(userPos)
+                                   .snippet(userId)
+                                   .title(userName)
+                                   .icon(spyCon);
+                           map.addMarker(peeps);
+                           Log.d("----->", userName + " " + userId);
+                       } else {
+                           MarkerOptions peeps = new MarkerOptions()
+                                   .position(userPos)
+                                   .snippet(userId)
+                                   .title(userName)
+                                   .icon(userAva);
+                           map.addMarker(peeps);
+                           Log.d("----->", userName + " " + userId);
+                       }
+
                    }
                 } else {
                     Toast.makeText(context, getContext().getString(R.string.nearby_failed) + ":" + response.code(), Toast.LENGTH_SHORT);
