@@ -55,7 +55,6 @@ public class CatchListView extends RelativeLayout {
     }
 
     public void getUserInfo() {
-//        final User user = new User();
         restClient = new RestClient();
         restClient.getApiService().caughtPeeps().enqueue(new Callback<User[]>() {
             @Override
@@ -66,14 +65,9 @@ public class CatchListView extends RelativeLayout {
 
                     for (User user : catchListAdapter.peeps) {
                         catchListAdapter.notifyDataSetChanged();
+                        user.getUserName();
                     }
-//                    base64mage = user.getAvatarBase64();
-//                    byte[] decodedString = Base64.decode(base64mage, Base64.DEFAULT);
-//                    Bitmap biteMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 //
-//                    usrAvatar.setImageBitmap(biteMap);
-//                    userId.setText(user.getUserId());
-//                    usrName.setText(user.getUserName());
                 }
             }
 

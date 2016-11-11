@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.aaroncampbell.peoplemon.Adapters.NearbyListAdapter;
 import com.aaroncampbell.peoplemon.Models.User;
@@ -24,7 +24,7 @@ import retrofit2.Response;
  * Created by aaroncampbell on 11/11/16.
  */
 
-public class NearbyListView extends RelativeLayout {
+public class NearbyListView extends LinearLayout {
     private Context context;
     public ArrayList<User> caughtPeeps;
     private RestClient restClient;
