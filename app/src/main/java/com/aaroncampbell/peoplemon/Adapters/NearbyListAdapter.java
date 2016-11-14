@@ -2,6 +2,7 @@ package com.aaroncampbell.peoplemon.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +21,11 @@ import butterknife.ButterKnife;
  */
 
 public class NearbyListAdapter extends RecyclerView.Adapter<NearbyListAdapter.NearbyHolder> {
-    public ArrayList<User> peeps;
+    public ArrayList<User> nearbyPeeps;
     private Context context;
 
-    public NearbyListAdapter(ArrayList<User> peeps, Context context) {
-        this.peeps = peeps;
+    public NearbyListAdapter(ArrayList<User> nearbyPeeps, Context context) {
+        this.nearbyPeeps = nearbyPeeps;
         this.context = context;
     } //Call immediately in onCreate to start process
 
@@ -38,18 +39,23 @@ public class NearbyListAdapter extends RecyclerView.Adapter<NearbyListAdapter.Ne
 
     @Override // Where we actually start the work of getting position of each row
     public void onBindViewHolder(NearbyListAdapter.NearbyHolder holder, int position) {
-        User user = peeps.get(position);
+        User user = nearbyPeeps.get(position);
         holder.bindNearby(user);
     }
 
     @Override // First thing called by Recycler View
     public int getItemCount() {
-        return peeps.size();
+        return nearbyPeeps == null ? 0 : nearbyPeeps.size();
     }
 
     class NearbyHolder extends RecyclerView.ViewHolder{
         @Bind(R.id.peep_name)
         TextView nameView;
+        @Bind(R.id.peep_id)
+        TextView peedId;
+
+        private String userName;
+        private String userId;
 
         public NearbyHolder(View itemView) {
             super(itemView);
@@ -58,7 +64,12 @@ public class NearbyListAdapter extends RecyclerView.Adapter<NearbyListAdapter.Ne
 
         // Puts data into UI
         public void bindNearby(User user) {
-            nameView.setText(user.getUserName());
+            userId = user.getUserId().toString();
+            userName = user.getUserName().toString();
+            Log.d("<------>", userId + ", " + userName);
+
+            nameView.setText(userName);
+            peedId.setText(userId);
         }
     }
 }

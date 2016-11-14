@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private ScreenplayDispatcher dispatcher;
     private static int RESULT_LOAD_IMG = 1;
     String encodedImage;
-//    protected byte[] overByte;
     private Context context;
 
     @Bind(R.id.container)
@@ -164,8 +163,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                } else {
-                    Toast.makeText(context, R.string.avatar_update_fail + ":" + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
             @Override

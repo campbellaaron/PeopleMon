@@ -245,7 +245,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
     private void findNearby() {
         final BitmapDescriptor spyCon = BitmapDescriptorFactory.fromResource(R.drawable.spy);
         RestClient restClient = new RestClient();
-        restClient.getApiService().nearby(100).enqueue(new Callback<User[]>() {
+        restClient.getApiService().nearby(500).enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
@@ -255,13 +255,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                        userName = user.getUserName();
                        LatLng userPos = new LatLng(userLat, userLng);
                        userId = user.getUserId();
-
-//                       MarkerOptions peeps = new MarkerOptions()
-//                               .position(userPos)
-//                               .snippet(userId)
-//                               .title(userName)
-//                               .icon(spyCon);
-//                       map.addMarker(peeps);
+                       Log.d("NEARBYPEEPS=========&", userId.toString() + ", " + userName.toString());
 
                        String userBase64 = user.getAvatarBase64();
                        if (userBase64 == null || userBase64.length() < 100) {
@@ -331,13 +325,17 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
     }
 
     public void catchPeeps() {
-        User user = new User(userId, radiusInMeters);
+        final User user = new User(userId, radiusInMeters);
         RestClient restClient = new RestClient();
         restClient.getApiService().catchPeeps(user).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(context, R.string.catch_success, Toast.LENGTH_SHORT).show();
+                        user.setCaughtUserId(user.getUserId());
+                        user.getCaughtUserId();
+                        Log.d("&&&&&", user.getUserId() + ", " + user.getCaughtUserId() + ", " + user.getUserName());
+
                 } else {
                     Toast.makeText(context, getContext().getString(R.string.catch_failed) + ":" + response.code(), Toast.LENGTH_SHORT).show();
                 }

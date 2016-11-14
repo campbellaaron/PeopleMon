@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.aaroncampbell.peoplemon.Adapters.NearbyListAdapter;
@@ -55,17 +56,18 @@ public class NearbyListView extends LinearLayout {
     }
 
     public void getUserInfo() {
-//        final User user = new User();
         restClient = new RestClient();
         restClient.getApiService().nearby(500).enqueue(new Callback<User[]>() {
             @Override
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
 
-                    nearbyListAdapter.peeps = new ArrayList<>(Arrays.asList(response.body()));
+                    nearbyListAdapter.nearbyPeeps = new ArrayList<>(Arrays.asList(response.body()));
 
-                    for (User user : nearbyListAdapter.peeps) {
+                    for (User user : nearbyListAdapter.nearbyPeeps) {
+
                         nearbyListAdapter.notifyDataSetChanged();
+                        Log.d("NEARBYPEEPS=========&", user.getUserName().toString());
                     }
                 }
             }

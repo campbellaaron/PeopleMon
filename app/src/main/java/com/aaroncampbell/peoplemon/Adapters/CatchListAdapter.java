@@ -20,11 +20,11 @@ import butterknife.ButterKnife;
  */
 
 public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.CaughtHolder> {
-    public ArrayList<User> peeps;
+    public ArrayList<User> caughtPeeps;
     private Context context;
 
-    public CatchListAdapter(ArrayList<User> peeps, Context context) {
-        this.peeps = peeps;
+    public CatchListAdapter(ArrayList<User> caughtPeeps, Context context) {
+        this.caughtPeeps = caughtPeeps;
         this.context = context;
     } //Call immediately in onCreate to start process
 
@@ -38,19 +38,24 @@ public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.Caug
 
     @Override // Where we actually start the work of getting position of each row
     public void onBindViewHolder(CaughtHolder holder, int position) {
-            User user = peeps.get(position);
+            User user = caughtPeeps.get(position);
             holder.bindPeepsCaught(user);
     }
 
     @Override // First thing called by Recycler View
     public int getItemCount() {
-        return peeps.size();
+        return caughtPeeps.size();
     }
 
     class CaughtHolder extends RecyclerView.ViewHolder{
 
         @Bind(R.id.name_textview)
         TextView nameView;
+        @Bind(R.id.id_textview)
+        TextView peepId;
+
+        private String userName;
+        private String userId;
 
 
         public CaughtHolder(View itemView) {
@@ -60,7 +65,11 @@ public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.Caug
 
         // Puts data into UI
         public void bindPeepsCaught(User user) {
-            nameView.setText(user.getUserName());
+            userId = user.getUserId().toString();
+            userName = user.getUserName().toString();
+
+            nameView.setText(userName);
+            peepId.setText(userId);
         }
     }
 }

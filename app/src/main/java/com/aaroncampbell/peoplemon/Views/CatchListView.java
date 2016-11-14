@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.RelativeLayout;
 
 import com.aaroncampbell.peoplemon.Adapters.CatchListAdapter;
@@ -26,7 +27,6 @@ import retrofit2.Response;
 
 public class CatchListView extends RelativeLayout {
     private Context context;
-    public ArrayList<User> caughtPeeps;
     private RestClient restClient;
     private CatchListAdapter catchListAdapter;
     private Integer usrId;
@@ -61,11 +61,14 @@ public class CatchListView extends RelativeLayout {
             public void onResponse(Call<User[]> call, Response<User[]> response) {
                 if (response.isSuccessful()) {
 
-                    catchListAdapter.peeps = new ArrayList<>(Arrays.asList(response.body()));
+                    catchListAdapter.caughtPeeps = new ArrayList<>(Arrays.asList(response.body()));
 
-                    for (User user : catchListAdapter.peeps) {
+                    for (User user : catchListAdapter.caughtPeeps) {
                         catchListAdapter.notifyDataSetChanged();
                         user.getUserName();
+                        user.setCaughtUserId(user.getUserId());
+                        user.getCaughtUserId();
+                        Log.d("+++++++++++", user.getUserName().toString());
                     }
 //
                 }
