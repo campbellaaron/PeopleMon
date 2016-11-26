@@ -51,11 +51,8 @@ public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.Caug
 
         @Bind(R.id.name_textview)
         TextView nameView;
-        @Bind(R.id.id_textview)
-        TextView peepId;
 
         private String userName;
-        private String userId;
 
 
         public CaughtHolder(View itemView) {
@@ -65,11 +62,9 @@ public class CatchListAdapter extends RecyclerView.Adapter<CatchListAdapter.Caug
 
         // Puts data into UI
         public void bindPeepsCaught(User user) {
-            userId = user.getUserId().toString();
             userName = user.getUserName().toString();
 
             nameView.setText(userName);
-            peepId.setText(userId);
         }
     }
 }

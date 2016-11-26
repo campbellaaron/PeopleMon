@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.aaroncampbell.peoplemon.Adapters.NearbyListAdapter;
 import com.aaroncampbell.peoplemon.Models.User;
@@ -74,7 +75,7 @@ public class NearbyListView extends LinearLayout {
 
             @Override
             public void onFailure(Call<User[]> call, Throwable t) {
-
+                Toast.makeText(context, "Nearby List Retrieval Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

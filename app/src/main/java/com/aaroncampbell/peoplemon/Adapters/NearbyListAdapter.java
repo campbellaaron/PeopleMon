@@ -51,8 +51,6 @@ public class NearbyListAdapter extends RecyclerView.Adapter<NearbyListAdapter.Ne
     class NearbyHolder extends RecyclerView.ViewHolder{
         @Bind(R.id.peep_name)
         TextView nameView;
-        @Bind(R.id.peep_id)
-        TextView peedId;
 
         private String userName;
         private String userId;
@@ -64,12 +62,10 @@ public class NearbyListAdapter extends RecyclerView.Adapter<NearbyListAdapter.Ne
 
         // Puts data into UI
         public void bindNearby(User user) {
-            userId = user.getUserId().toString();
             userName = user.getUserName().toString();
-            Log.d("<------>", userId + ", " + userName);
+            Log.d("<------>", userName);
 
             nameView.setText(userName);
-            peedId.setText(userId);
         }
     }
 }
