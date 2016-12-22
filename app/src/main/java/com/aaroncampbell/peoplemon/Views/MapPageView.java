@@ -232,7 +232,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Log.d("**********", latLng.toString());
+                    Log.d(TAG, latLng.toString());
                 }
             }
 
@@ -269,7 +269,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                        } else {
                            try {
                                byte[] decodedString = Base64.decode(userBase64, Base64.DEFAULT);
-                               Log.d("$$$$$$$$$$$", decodedString.toString());
+                               Log.d(TAG, decodedString.toString());
                                Bitmap decodeAvatar = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                                decodeAvatar = Bitmap.createScaledBitmap(decodeAvatar, 100, 100, false);
 
