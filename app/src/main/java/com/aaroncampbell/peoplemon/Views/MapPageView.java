@@ -184,7 +184,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                     yourName = account.getFullName();
                     byte[] decodedString = Base64.decode(base64ava, Base64.DEFAULT);
                     Bitmap biteMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                    biteMap = Bitmap.createScaledBitmap(biteMap, 160, 160, false);
+                    biteMap = Bitmap.createScaledBitmap(biteMap, 150, 150, false);
                     userMarker = biteMap;
 
                     MarkerOptions options = new MarkerOptions()
@@ -209,7 +209,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         ValueAnimator valAnim = new ValueAnimator();
         valAnim.setRepeatCount(ValueAnimator.INFINITE);
         valAnim.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
-        valAnim.setIntValues(0, 100);
+        valAnim.setIntValues(0, 100000);
         valAnim.setDuration(10000);
         valAnim.setEvaluator(new IntEvaluator());
         valAnim.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -218,7 +218,7 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
                 float animatedFraction = valueAnimator.getAnimatedFraction();
                 // Log.e("", "" + animatedFraction);
-                circle.setRadius(animatedFraction * 200);
+                circle.setRadius(animatedFraction * 100);
             }
         });
         valAnim.start();
@@ -283,6 +283,26 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
                            } catch (Exception e) {}
 
                        }
+
+                       final Circle userCircle = map.addCircle(new CircleOptions().center(userPos)
+                               .strokeColor(Color.BLUE).radius(1000));
+
+                       ValueAnimator valAnim = new ValueAnimator();
+                       valAnim.setRepeatCount(ValueAnimator.INFINITE);
+                       valAnim.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
+                       valAnim.setIntValues(0, 100000);
+                       valAnim.setDuration(10000);
+                       valAnim.setEvaluator(new IntEvaluator());
+                       valAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+                       valAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                           @Override
+                           public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                               float animatedFraction = valueAnimator.getAnimatedFraction();
+                               // Log.e("", "" + animatedFraction);
+                               userCircle.setRadius(animatedFraction * 100);
+                           }
+                       });
+                       valAnim.start();
 
                    }
                 } else {
