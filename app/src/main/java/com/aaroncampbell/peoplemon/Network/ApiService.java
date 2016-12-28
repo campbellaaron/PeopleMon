@@ -44,4 +44,5 @@ public interface ApiService {
 
     @GET("/v1/User/Caught")
     Call<User[]> caughtPeeps();
+
 }

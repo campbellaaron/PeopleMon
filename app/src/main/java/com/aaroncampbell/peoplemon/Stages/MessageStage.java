@@ -26,7 +26,7 @@ public class MessageStage extends IndexedStage {
 
     @Override
     public int getLayoutId() {
-        return R.layout.messages;
+        return R.layout.message_view;
     }
 
 

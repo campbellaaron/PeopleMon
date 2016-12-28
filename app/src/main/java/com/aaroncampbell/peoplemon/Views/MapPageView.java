@@ -30,6 +30,7 @@ import com.aaroncampbell.peoplemon.Network.RestClient;
 import com.aaroncampbell.peoplemon.PeopleMonApplication;
 import com.aaroncampbell.peoplemon.R;
 import com.aaroncampbell.peoplemon.Stages.CatchListStage;
+import com.aaroncampbell.peoplemon.Stages.MessageStage;
 import com.aaroncampbell.peoplemon.Stages.NearbyListStage;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -381,6 +382,15 @@ public class MapPageView extends RelativeLayout implements OnMapReadyCallback,
         Flow flow = PeopleMonApplication.getMainFlow();
         History newHistory = flow.getHistory().buildUpon()
                 .push(new CatchListStage())
+                .build();
+        flow.setHistory(newHistory, Flow.Direction.FORWARD);
+    }
+
+    @OnClick(R.id.messages)
+    public void messageTapped() {
+        Flow flow = PeopleMonApplication.getMainFlow();
+        History newHistory = flow.getHistory().buildUpon()
+                .push(new MessageStage())
                 .build();
         flow.setHistory(newHistory, Flow.Direction.FORWARD);
     }

@@ -25,6 +25,10 @@ public class User {
     private Date createDate;
     @SerializedName("radiusInMeters")
     private Integer radiusInMeters;
+    @SerializedName("RecipientId")
+    private String recipientId;
+    @SerializedName("RecipientName")
+    private String recipientName;
 
     public User() {
     }
@@ -108,5 +112,21 @@ public class User {
     }
     public void setRadiusInMeters(Integer radiusInMeters) {
         this.radiusInMeters = radiusInMeters;
+    }
+
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
+    }
+
+    public String getRecipientName() {
+        return recipientName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.recipientName = recipientName;
     }
 }
